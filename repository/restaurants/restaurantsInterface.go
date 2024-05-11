@@ -9,4 +9,5 @@ type RestaurantInterface interface {
 	CreateInfo(restaurantId uint, updateRestaurant entities.RestaurantInfo) (entities.RestaurantInfo, error)
 	UpdateInfo(restaurantId uint, updateRestaurant entities.RestaurantInfo) (entities.RestaurantInfo, error)
 	Update(restaurantId uint, updatedRestaurant entities.Restaurant) (entities.Restaurant, error)
+	GetAll() ([]entities.RestaurantInfo, error)
 }

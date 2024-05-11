@@ -124,3 +124,11 @@ func (repository *RestaurantRepositoryDB) UpdateInfo(restaurantID uint, updateRe
 
 	return existingRestaurantInfo, nil
 }
+
+func (repository *RestaurantRepositoryDB) GetAll() ([]entities.RestaurantInfo, error) {
+	var restaurants []entities.RestaurantInfo
+	if err := repository.db.Find(&restaurants).Error; err != nil {
+		return nil, err
+	}
+	return restaurants, nil
+}

@@ -2,6 +2,7 @@ package routes
 
 import (
 	"foodresq/controller"
+	"foodresq/controller/products"
 	"foodresq/controller/restaurants"
 	mid "foodresq/middleware"
 
@@ -9,7 +10,7 @@ import (
 	middleware "github.com/labstack/echo/v4/middleware"
 )
 
-func InitRoute(e *echo.Echo, uc *controller.UserController, rc *restaurants.RestaurantsController) {
+func InitRoute(e *echo.Echo, uc *controller.UserController, rc *restaurants.RestaurantsController, pc *products.ProductController) {
 	e.Use(middleware.Logger())
 
 	user := e.Group("/v1/users")
@@ -26,5 +27,8 @@ func InitRoute(e *echo.Echo, uc *controller.UserController, rc *restaurants.Rest
 	restaurant.POST("/profile/info", rc.CreateRestaurantInfo(), middleware.JWT([]byte(mid.GetSigningKey())))
 	restaurant.PUT("/profile/info", rc.UpdateRestaurantInfo(), middleware.JWT([]byte(mid.GetSigningKey())))
 
-	// restaurant.GET("/list", rc.GetListRestaurant())
+	restaurant.GET("/list", rc.GetAllRestaurants())
+
+	product := e.Group("/v1/products")
+	product.POST("/create", pc.CreateProduct(), middleware.JWT([]byte(mid.GetSigningKey())))
 }

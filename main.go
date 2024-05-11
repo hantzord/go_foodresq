@@ -4,8 +4,10 @@ import (
 	"fmt"
 	"foodresq/configs"
 	"foodresq/controller"
+	"foodresq/controller/products"
 	"foodresq/controller/restaurants"
 	"foodresq/repository"
+	productRepository "foodresq/repository/products"
 	restaurantRepository "foodresq/repository/restaurants"
 	"foodresq/routes"
 	"foodresq/utils"
@@ -25,6 +27,9 @@ func main() {
 	restaurantRepository := restaurantRepository.NewRestaurantRepository(db)
 	restaurantsController := restaurants.NewRestaurantController(restaurantRepository)
 
-	routes.InitRoute(e, UserController, restaurantsController)
+	productRepository := productRepository.NewProductRepository(db)
+	productController := products.NewProductController(productRepository)
+
+	routes.InitRoute(e, UserController, restaurantsController, productController)
 	e.Logger.Fatal(e.Start(fmt.Sprintf(":%v", config.Port)))
 }

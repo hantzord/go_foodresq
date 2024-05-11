@@ -25,6 +25,7 @@ func NewRestaurantController(repo restaurants.RestaurantInterface) *RestaurantsC
 }
 
 func (rc RestaurantsController) SignupRestaurant() echo.HandlerFunc {
+
 	return func(c echo.Context) error {
 
 		newRestReq := dto.RestSignupRequest{}
@@ -63,6 +64,7 @@ func (rc RestaurantsController) SignupRestaurant() echo.HandlerFunc {
 func (rc RestaurantsController) LoginRestaurant() echo.HandlerFunc {
 
 	return func(c echo.Context) error {
+
 		restLogin := dto.RestLoginRequest{}
 
 		if err := c.Bind(&restLogin); err != nil {
@@ -91,6 +93,7 @@ func (rc RestaurantsController) LoginRestaurant() echo.HandlerFunc {
 func (rc RestaurantsController) UpdateMyRestaurant() echo.HandlerFunc {
 
 	return func(c echo.Context) error {
+
 		uid := c.Get("user").(*jwt.Token)
 		claims := uid.Claims.(jwt.MapClaims)
 		restaurantId := claims["restaurantid"].(float64)
@@ -257,4 +260,37 @@ func (rc RestaurantsController) UpdateRestaurantInfo() echo.HandlerFunc {
 			return c.JSON(http.StatusOK, response)
 		}
 	}
+}
+
+func (rc RestaurantsController) GetAllRestaurants() echo.HandlerFunc {
+
+	return func(c echo.Context) error {
+		res, err := rc.Repo.GetAll()
+		if err != nil {
+			return c.JSON(http.StatusNotFound, errorhandler.ResponseWriter(err.Error()))
+		}
+
+		var resp []dto.AllRestaurantListResponse
+
+		for _, restI := range res {
+			resp = append(resp, dto.AllRestaurantListResponse{
+				ID:                 restI.ID,
+				Name:               restI.Name,
+				Latitude:           restI.Latitude,
+				Longitude:          restI.Longitude,
+				City:               restI.City,
+				Address:            restI.Address,
+				PhoneNumber:        restI.PhoneNumber,
+				Description:        restI.Description,
+				RestaurantProducts: restI.RestaurantProducts,
+			})
+		}
+		response := dto.AllRestaurantListResponseMsg{
+			Message: "Get all restaurants success",
+			Data:    resp,
+		}
+
+		return c.JSON(http.StatusOK, response)
+	}
+
 }

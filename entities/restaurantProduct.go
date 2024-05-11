@@ -1,6 +1,8 @@
 package entities
 
 import (
+	"fmt"
+	"strings"
 	"time"
 
 	"gorm.io/gorm"
@@ -35,4 +37,44 @@ type RestaurantProduct struct {
 	ExpiryDate       time.Time        `gorm:"not null"`
 	Description      string
 	RestaurantInfo   RestaurantInfo
+}
+
+// ParseProductCategory mengonversi string menjadi ProductCategory enum
+func ParseProductCategory(category string) (ProductCategory, error) {
+	switch strings.ToLower(category) {
+	case "food":
+		return Food, nil
+	case "drink":
+		return Drink, nil
+	case "snack":
+		return Snack, nil
+	case "dessert":
+		return Dessert, nil
+	default:
+		return "", fmt.Errorf("invalid product category: %s", category)
+	}
+}
+
+// ParseProductCondition mengonversi string menjadi ProductCondition enum
+func ParseProductCondition(condition string) (ProductCondition, error) {
+	switch strings.ToLower(condition) {
+	case "fresh":
+		return Fresh, nil
+	case "stale":
+		return Stale, nil
+	case "rotten":
+		return Rotten, nil
+	default:
+		return "", fmt.Errorf("invalid product condition: %s", condition)
+	}
+}
+
+// String mengembalikan representasi string dari ProductCategory enum
+func (pc ProductCategory) String() string {
+	return string(pc)
+}
+
+// String mengembalikan representasi string dari ProductCondition enum
+func (pc ProductCondition) String() string {
+	return string(pc)
 }

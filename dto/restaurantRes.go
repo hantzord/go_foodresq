@@ -15,13 +15,12 @@ type RestaurantLoginResponse struct {
 	Token   string `json:"token"`
 }
 
-type RestaurantProfileResponse struct {
+type RestaurantProfileResponseMsg struct {
 	Message string      `json:"message"`
 	Data    interface{} `json:"data"`
-	Info    interface{} `json:"info"`
 }
 
-type RestaurantDetailResponse struct {
+type RestaurantInfoResponse struct {
 	ID                 uint        `json:"id"`
 	Name               string      `json:"name"`
 	Latitude           float64     `json:"latitude"`
@@ -31,4 +30,9 @@ type RestaurantDetailResponse struct {
 	PhoneNumber        string      `json:"phone_number"`
 	Description        string      `json:"description"`
 	RestaurantProducts interface{} `json:"restaurant_products"`
+}
+
+type RestaurantInfoResponseMsg struct {
+	Message string      `json:"message"`
+	Data    interface{} `json:"data"`
 }

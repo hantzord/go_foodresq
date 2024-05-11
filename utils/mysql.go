@@ -35,7 +35,7 @@ func InitMigration(db *gorm.DB) {
 	db.AutoMigrate(entities.User{})
 	db.AutoMigrate(entities.Restaurant{})
 	db.AutoMigrate(entities.RestaurantInfo{})
-	db.AutoMigrate(entities.RestaurantProducts{})
+	db.AutoMigrate(entities.RestaurantProduct{})
 	db.AutoMigrate(entities.Transaction{})
 
 }

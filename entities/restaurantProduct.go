@@ -23,7 +23,7 @@ const (
 	Rotten ProductCondition = "Rotten"
 )
 
-type RestaurantProducts struct {
+type RestaurantProduct struct {
 	gorm.Model
 	ID               uint
 	RestaurantInfoID uint             `gorm:"primarykey"`

@@ -88,7 +88,7 @@ func (rc RestaurantsController) LoginRestaurant() echo.HandlerFunc {
 	}
 }
 
-func (rc RestaurantsController) UpdateRestaurant() echo.HandlerFunc {
+func (rc RestaurantsController) UpdateMyRestaurant() echo.HandlerFunc {
 
 	return func(c echo.Context) error {
 		uid := c.Get("user").(*jwt.Token)
@@ -119,7 +119,7 @@ func (rc RestaurantsController) UpdateRestaurant() echo.HandlerFunc {
 			}
 
 			response := dto.SignupRestaurantsResponse{
-				Message: "Update restaurant success",
+				Message: "Email or password",
 				Data:    data,
 			}
 
@@ -128,7 +128,7 @@ func (rc RestaurantsController) UpdateRestaurant() echo.HandlerFunc {
 	}
 }
 
-func (rc RestaurantsController) RestaurantProfile() echo.HandlerFunc {
+func (rc RestaurantsController) GetMyRestaurant() echo.HandlerFunc {
 
 	return func(c echo.Context) error {
 
@@ -136,12 +136,12 @@ func (rc RestaurantsController) RestaurantProfile() echo.HandlerFunc {
 		claims := uid.Claims.(jwt.MapClaims)
 		restaurantId := claims["restaurantid"].(float64)
 
-		if res, resIn, err := rc.Repo.Get(uint(restaurantId)); err != nil {
+		if res, _, err := rc.Repo.Get(uint(restaurantId)); err != nil {
 			return c.JSON(http.StatusNotFound, errorhandler.ResponseWriter(err.Error()))
 
 		} else {
 
-			restaurantDetail := dto.RestaurantDetailResponse{
+			restaurantInfo := dto.RestaurantInfoResponse{
 				ID:                 res.RestaurantInfo.ID,
 				Name:               res.RestaurantInfo.Name,
 				Latitude:           res.RestaurantInfo.Latitude,
@@ -150,13 +150,108 @@ func (rc RestaurantsController) RestaurantProfile() echo.HandlerFunc {
 				Address:            res.RestaurantInfo.Address,
 				PhoneNumber:        res.RestaurantInfo.PhoneNumber,
 				Description:        res.RestaurantInfo.Description,
-				RestaurantProducts: resIn,
+				RestaurantProducts: res.RestaurantInfo.RestaurantProducts,
 			}
 
-			response := dto.RestaurantProfileResponse{
+			response := dto.RestaurantProfileResponseMsg{
 				Message: "Get restaurant profile success",
-				Data:    res,
-				Info:    restaurantDetail,
+				Data:    restaurantInfo,
+			}
+
+			return c.JSON(http.StatusOK, response)
+		}
+	}
+}
+
+func (rc RestaurantsController) CreateRestaurantInfo() echo.HandlerFunc {
+
+	return func(c echo.Context) error {
+
+		uid := c.Get("user").(*jwt.Token)
+		claims := uid.Claims.(jwt.MapClaims)
+		restaurantId := claims["restaurantid"].(float64)
+
+		restIReq := dto.RestaurantInfoRequest{}
+		if err := c.Bind(&restIReq); err != nil {
+			return c.JSON(http.StatusBadRequest, errorhandler.ResponseWriter("Invalid request body"))
+		}
+
+		restI := entities.RestaurantInfo{
+			Name:        restIReq.Name,
+			Latitude:    restIReq.Latitude,
+			Longitude:   restIReq.Longitude,
+			City:        restIReq.City,
+			Address:     restIReq.Address,
+			PhoneNumber: restIReq.PhoneNumber,
+			Description: restIReq.Description,
+		}
+
+		if res, err := rc.Repo.CreateInfo(uint(restaurantId), restI); err != nil || res.ID == 0 {
+			return c.JSON(http.StatusNotFound, errorhandler.ResponseWriter(err.Error()))
+		} else {
+
+			restaurantInfo := dto.RestaurantInfoResponse{
+				ID:          res.ID,
+				Name:        res.Name,
+				Latitude:    res.Latitude,
+				Longitude:   res.Longitude,
+				City:        res.City,
+				Address:     res.Address,
+				PhoneNumber: res.PhoneNumber,
+				Description: res.Description,
+			}
+
+			response := dto.RestaurantInfoResponseMsg{
+				Message: "Create restaurant info success",
+				Data:    restaurantInfo,
+			}
+
+			return c.JSON(http.StatusOK, response)
+		}
+	}
+}
+
+func (rc RestaurantsController) UpdateRestaurantInfo() echo.HandlerFunc {
+
+	return func(c echo.Context) error {
+
+		uid := c.Get("user").(*jwt.Token)
+		claims := uid.Claims.(jwt.MapClaims)
+		restaurantId := claims["restaurantid"].(float64)
+
+		updRestIReq := dto.RestaurantInfoUpdateRequest{}
+		if err := c.Bind(&updRestIReq); err != nil {
+			return c.JSON(http.StatusBadRequest, errorhandler.ResponseWriter("Invalid request body"))
+		}
+
+		updRest := entities.RestaurantInfo{
+			Name:        updRestIReq.Name,
+			Latitude:    updRestIReq.Latitude,
+			Longitude:   updRestIReq.Longitude,
+			City:        updRestIReq.City,
+			Address:     updRestIReq.Address,
+			PhoneNumber: updRestIReq.PhoneNumber,
+			Description: updRestIReq.Description,
+		}
+
+		if res, err := rc.Repo.UpdateInfo(uint(restaurantId), updRest); err != nil || res.ID == 0 {
+			return c.JSON(http.StatusNotFound, errorhandler.ResponseWriter(err.Error()))
+		} else {
+
+			restaurantInfo := dto.RestaurantInfoResponse{
+				ID:          res.ID,
+				Name:        res.Name,
+				Latitude:    res.Latitude,
+				Longitude:   res.Longitude,
+				City:        res.City,
+				Address:     res.Address,
+				PhoneNumber: res.PhoneNumber,
+				Description: res.Description,
+			}
+
+			response := dto.RestaurantInfoResponseMsg{
+				Message: "Update restaurant info success",
+				Data:    restaurantInfo,
 			}
 
 			return c.JSON(http.StatusOK, response)

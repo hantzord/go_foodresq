@@ -31,6 +31,5 @@ func InitConfig() *AppConfig {
 	cfg.DatabaseURL.DBhost = os.Getenv("DB_HOST")
 	cfg.DatabaseURL.DBport = os.Getenv("DB_PORT")
 	cfg.DatabaseURL.DBname = os.Getenv("DB_NAME")
-
 	return &cfg
 }

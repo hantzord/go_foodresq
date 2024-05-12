@@ -24,10 +24,9 @@ func NewProductController(repo products.ProductInterface) *ProductController {
 
 func (pc ProductController) CreateProduct() echo.HandlerFunc {
 	return func(c echo.Context) error {
-
 		uid := c.Get("user").(*jwt.Token)
 		claims := uid.Claims.(jwt.MapClaims)
-		restaurantId := uint(claims["restaurantid"].(float64))
+		restaurantID := uint(claims["restaurantid"].(float64))
 
 		// Binding request body to ProductRequest struct
 		productReq := dto.ProductRequest{}
@@ -46,17 +45,25 @@ func (pc ProductController) CreateProduct() echo.HandlerFunc {
 			return c.JSON(http.StatusBadRequest, errorhandler.ResponseWriter(err.Error()))
 		}
 
+		// Parse ExpiryDate to time.Time
 		var expiryDate time.Time
 		if productReq.ExpiryDate != "" {
+			// Parse tanggal kedaluwarsa dari string ke time.Time
 			expiryDate, err = time.Parse("2006-01-02", productReq.ExpiryDate)
 			if err != nil {
 				return c.JSON(http.StatusBadRequest, errorhandler.ResponseWriter("Invalid expiry date format"))
 			}
+			// Konversi ke Waktu Indonesia Barat (WIB)
+			loc, err := time.LoadLocation("Asia/Jakarta")
+			if err != nil {
+				return c.JSON(http.StatusInternalServerError, errorhandler.ResponseWriter(err.Error()))
+			}
+			expiryDate = expiryDate.In(loc)
 		}
 
 		// Creating Product entity
 		newProduct := entities.RestaurantProduct{
-			RestaurantInfoID: restaurantId,
+			RestaurantInfoID: restaurantID,
 			ProductName:      productReq.ProductName,
 			ProductCategory:  category,
 			ProductPrice:     productReq.ProductPrice,
@@ -67,14 +74,15 @@ func (pc ProductController) CreateProduct() echo.HandlerFunc {
 		}
 
 		// Calling repository to create product
-		if _, err := pc.Repo.CreateProduct(newProduct); err != nil {
+		createdProduct, err := pc.Repo.CreateProduct(restaurantID, newProduct)
+		if err != nil {
 			return c.JSON(http.StatusInternalServerError, errorhandler.ResponseWriter(err.Error()))
 		}
 
 		// Constructing success response
 		response := dto.ProductResponseMsg{
 			Message: "Product created successfully",
-			Data:    newProduct,
+			Data:    createdProduct,
 		}
 
 		return c.JSON(http.StatusCreated, response)

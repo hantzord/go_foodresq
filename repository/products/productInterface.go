@@ -3,5 +3,5 @@ package products
 import "foodresq/entities"
 
 type ProductInterface interface {
-	CreateProduct(newProduct entities.RestaurantProduct) (entities.RestaurantProduct, error)
+	CreateProduct(restaurantID uint, newProduct entities.RestaurantProduct) (entities.RestaurantProduct, error)
 }

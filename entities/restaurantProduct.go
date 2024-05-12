@@ -28,7 +28,7 @@ const (
 type RestaurantProduct struct {
 	gorm.Model
 	ID               uint
-	RestaurantInfoID uint             `gorm:"primarykey"`
+	RestaurantInfoID uint
 	ProductName      string           `gorm:"not null"`
 	ProductCategory  ProductCategory  `gorm:"type:enum('Food','Drink','Snack','Dessert')"`
 	ProductPrice     int              `gorm:"column:product_price;type:int;not null;default:0"`
@@ -36,7 +36,6 @@ type RestaurantProduct struct {
 	ProductImage     string           `gorm:"not null"`
 	ExpiryDate       time.Time        `gorm:"not null"`
 	Description      string
-	RestaurantInfo   RestaurantInfo
 }
 
 // ParseProductCategory mengonversi string menjadi ProductCategory enum

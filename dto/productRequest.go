@@ -23,5 +23,5 @@ type UpdateProductRequest struct {
 }
 
 type ProductDeleteRequest struct {
-	ProductID uint `json:"product_id"`
+	ProductName string `json:"product_name"`
 }

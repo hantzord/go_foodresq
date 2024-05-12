@@ -182,14 +182,14 @@ func (pc *ProductController) DeleteProduct() echo.HandlerFunc {
 		claims := uid.Claims.(jwt.MapClaims)
 		restaurantID := uint(claims["restaurantid"].(float64))
 
-		// Binding request body to ProductDeleteRequest struct
+		// Binding request body to ProductDeleteByNameRequest struct
 		deleteReq := dto.ProductDeleteRequest{}
 		if err := c.Bind(&deleteReq); err != nil {
 			return c.JSON(http.StatusBadRequest, errorhandler.ResponseWriter("Invalid request body"))
 		}
 
-		// Calling repository to delete product
-		err := pc.Repo.DeleteProduct(restaurantID, uint(deleteReq.ProductID))
+		// Calling repository to delete product by name
+		err := pc.Repo.DeleteProduct(restaurantID, deleteReq.ProductName)
 		if err != nil {
 			return c.JSON(http.StatusInternalServerError, errorhandler.ResponseWriter(err.Error()))
 		}

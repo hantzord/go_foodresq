@@ -31,4 +31,8 @@ func InitRoute(e *echo.Echo, uc *controller.UserController, rc *restaurants.Rest
 
 	product := e.Group("/v1/products")
 	product.POST("/create", pc.CreateProduct(), middleware.JWT([]byte(mid.GetSigningKey())))
+	product.GET("/discover", pc.GetAllProduct())
+	product.PUT("/update", pc.UpdateProduct(), middleware.JWT([]byte(mid.GetSigningKey())))    // Update berdasarkan nama
+	product.DELETE("/delete", pc.DeleteProduct(), middleware.JWT([]byte(mid.GetSigningKey()))) // Delete berdasarkan id produk
+
 }

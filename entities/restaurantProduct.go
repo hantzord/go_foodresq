@@ -26,10 +26,11 @@ const (
 )
 
 type RestaurantProduct struct {
-	gorm.Model
+	gorm.Model       `json:"-"`
 	ID               uint
 	RestaurantInfoID uint
 	ProductName      string           `gorm:"not null"`
+	Quantity         int              `gorm:"column:quantity;type:int;not null;default:0"`
 	ProductCategory  ProductCategory  `gorm:"type:enum('Food','Drink','Snack','Dessert')"`
 	ProductPrice     int              `gorm:"column:product_price;type:int;not null;default:0"`
 	ProductCondition ProductCondition `gorm:"type:enum('Fresh','Stale','Rotten')"`

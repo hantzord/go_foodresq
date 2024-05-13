@@ -10,6 +10,7 @@ import (
 	"foodresq/repository"
 	"net/http"
 
+	"github.com/golang-jwt/jwt"
 	"github.com/labstack/echo/v4"
 )
 
@@ -77,6 +78,79 @@ func (uc UserController) Login() echo.HandlerFunc {
 				Message: "Login success",
 				Token:   token,
 			})
+		}
+	}
+}
+
+func (uc UserController) GetUser() echo.HandlerFunc {
+
+	return func(c echo.Context) error {
+
+		uid := c.Get("user").(*jwt.Token)
+		claims := uid.Claims.(jwt.MapClaims)
+		userID := uint(claims["userid"].(float64))
+
+		if res, err := uc.Repo.Get(userID); err != nil || res.ID == 0 {
+			return c.JSON(http.StatusInternalServerError, errorhandler.ResponseWriter(err.Error()))
+		} else {
+			response := dto.UserResponse{
+				ID:          res.ID,
+				Name:        res.Name,
+				Email:       res.Email,
+				PhoneNumber: res.PhoneNumber,
+				Address:     res.Address,
+			}
+
+			responses := dto.GetResponse{
+				Message: "Get user success",
+				Data:    response,
+			}
+
+			return c.JSON(http.StatusOK, responses)
+		}
+	}
+}
+
+func (uc UserController) UpdateUser() echo.HandlerFunc {
+
+	return func(c echo.Context) error {
+
+		uid := c.Get("user").(*jwt.Token)
+		claims := uid.Claims.(jwt.MapClaims)
+		userID := uint(claims["userid"].(float64))
+
+		updateUserReq := dto.UpdateUserRequest{}
+		if err := c.Bind(&updateUserReq); err != nil || updateUserReq.Email == "" || updateUserReq.Password == "" {
+			return c.JSON(http.StatusBadRequest, errorhandler.ResponseWriter("Invalid request body"))
+		}
+
+		passwordHash := sha256.Sum256([]byte(updateUserReq.Password))
+		passwordString := fmt.Sprintf("%x", passwordHash[:])
+
+		updateUser := entities.User{
+			Email:       updateUserReq.Email,
+			Password:    passwordString,
+			Name:        updateUserReq.Name,
+			PhoneNumber: updateUserReq.PhoneNumber,
+			Address:     updateUserReq.Address,
+		}
+		if res, err := uc.Repo.Update(uint(userID), updateUser); err != nil || res.ID == 0 {
+			return c.JSON(http.StatusNotFound, errorhandler.ResponseWriter(err.Error()))
+		} else {
+			responses := dto.UserResponse{
+				ID:          res.ID,
+				Name:        res.Name,
+				Email:       res.Email,
+				PhoneNumber: res.PhoneNumber,
+				Address:     res.Address,
+			}
+
+			response := dto.GetResponse{
+				Message: "Update user success",
+				Data:    responses,
+			}
+
+			return c.JSON(http.StatusOK, response)
 		}
 	}
 }

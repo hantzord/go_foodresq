@@ -6,9 +6,11 @@ import (
 	"foodresq/controller"
 	"foodresq/controller/products"
 	"foodresq/controller/restaurants"
+	"foodresq/controller/transaction"
 	"foodresq/repository"
 	productRepository "foodresq/repository/products"
 	restaurantRepository "foodresq/repository/restaurants"
+	transactionRepository "foodresq/repository/transaction"
 	"foodresq/routes"
 	"foodresq/utils"
 
@@ -30,6 +32,9 @@ func main() {
 	productRepository := productRepository.NewProductRepository(db)
 	productController := products.NewProductController(productRepository)
 
-	routes.InitRoute(e, UserController, restaurantsController, productController)
+	transactionRepository := transactionRepository.NewTransactionRepository(db)
+	transactionController := transaction.NewTransactionController(transactionRepository)
+
+	routes.InitRoute(e, UserController, restaurantsController, productController, transactionController)
 	e.Logger.Fatal(e.Start(fmt.Sprintf(":%v", config.Port)))
 }

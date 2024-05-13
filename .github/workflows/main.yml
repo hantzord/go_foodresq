@@ -38,4 +38,4 @@ jobs:
           script: |
             cd /home/ec2-user/foodresq
             docker pull hantzord/foodresq:latest
-            docker run -d -p 3000:3000 hantzord/foodresq:latest
+            docker run -d -p 8080:8080 hantzord/foodresq:latest

@@ -1,7 +1,6 @@
 # Food ResQ
-<div style="text-align:center;">
-    ![FoodResQ ERD](document/FOODRESQ%20LOGO.png)
-</div>
+![FoodResQ ERD](document/FOODRESQ%20LOGO.png)
+
 
 ## About Project
 Sampah makanan merupakan isu global yang mendesak, dengan perkiraan sepertiga dari semua makanan yang diproduksi di dunia terbuang sia-sia. Hal ini tidak hanya berdampak negatif pada lingkungan, tetapi juga menimbulkan masalah kesehatan, karena makanan yang terbuang dapat menjadi tempat berkembang biak bagi bakteri dan jamur. FoodResQ hadir sebagai solusi inovatif untuk mengatasi permasalahan ini dengan memanfaatkan teknologi digital untuk menghubungkan individu, restoran, dan toko dalam upaya untuk mengurangi sampah makanan.
@@ -42,9 +41,7 @@ Tech stack yang digunakan:
 API documentation   : 
 
 ## ERD
-<div style="text-align:center;">
-    ![FoodResQ ERD](document/mini-project-alfiannfr.jpg)
-</div>
+![FoodResQ ERD](document/mini-project-alfiannfr.jpg)
 
 ## Presentations Slide
 Link presentasi

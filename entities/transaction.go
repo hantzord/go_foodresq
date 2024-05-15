@@ -16,7 +16,6 @@ type Transaction struct {
 	UniqueCode          string
 	PaymentType         string
 	PickupTime          time.Time
-	CreatedAt           time.Time
 }
 
 func NewTransaction(userID uint, restaurantProductID uint, totalAmount float64, uniqueCode string, paymentType string, pickupTime time.Time) *Transaction {

@@ -1,0 +1,1534 @@
+
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		<title>configs: Go Coverage Report</title>
+		<style>
+			body {
+				background: black;
+				color: rgb(80, 80, 80);
+			}
+			body, pre, #legend span {
+				font-family: Menlo, monospace;
+				font-weight: bold;
+			}
+			#topbar {
+				background: black;
+				position: fixed;
+				top: 0; left: 0; right: 0;
+				height: 42px;
+				border-bottom: 1px solid rgb(80, 80, 80);
+			}
+			#content {
+				margin-top: 50px;
+			}
+			#nav, #legend {
+				float: left;
+				margin-left: 10px;
+			}
+			#legend {
+				margin-top: 12px;
+			}
+			#nav {
+				margin-top: 10px;
+			}
+			#legend span {
+				margin: 0 5px;
+			}
+			.cov0 { color: rgb(192, 0, 0) }
+.cov1 { color: rgb(128, 128, 128) }
+.cov2 { color: rgb(116, 140, 131) }
+.cov3 { color: rgb(104, 152, 134) }
+.cov4 { color: rgb(92, 164, 137) }
+.cov5 { color: rgb(80, 176, 140) }
+.cov6 { color: rgb(68, 188, 143) }
+.cov7 { color: rgb(56, 200, 146) }
+.cov8 { color: rgb(44, 212, 149) }
+.cov9 { color: rgb(32, 224, 152) }
+.cov10 { color: rgb(20, 236, 155) }
+
+		</style>
+	</head>
+	<body>
+		<div id="topbar">
+			<div id="nav">
+				<select id="files">
+				
+				<option value="file0">foodresq/configs/config.go (90.9%)</option>
+				
+				<option value="file1">foodresq/controller/products/productController.go (0.0%)</option>
+				
+				<option value="file2">foodresq/controller/restaurants/restaurantsController.go (0.0%)</option>
+				
+				<option value="file3">foodresq/controller/transaction/transactionController.go (0.0%)</option>
+				
+				<option value="file4">foodresq/controller/userController.go (0.0%)</option>
+				
+				<option value="file5">foodresq/entities/restaurantProduct.go (0.0%)</option>
+				
+				<option value="file6">foodresq/entities/transaction.go (0.0%)</option>
+				
+				<option value="file7">foodresq/errorHandler/errorHandler.go (0.0%)</option>
+				
+				<option value="file8">foodresq/helpers/amount.go (0.0%)</option>
+				
+				<option value="file9">foodresq/main.go (0.0%)</option>
+				
+				<option value="file10">foodresq/middleware/jwtAuth.go (0.0%)</option>
+				
+				<option value="file11">foodresq/repository/products/product.go (0.0%)</option>
+				
+				<option value="file12">foodresq/repository/transaction/transactionRepository.go (0.0%)</option>
+				
+				<option value="file13">foodresq/repository/user.go (88.2%)</option>
+				
+				<option value="file14">foodresq/routes/route.go (0.0%)</option>
+				
+				<option value="file15">foodresq/utils/mysql.go (90.9%)</option>
+				
+				</select>
+			</div>
+			<div id="legend">
+				<span>not tracked</span>
+			
+				<span class="cov0">not covered</span>
+				<span class="cov8">covered</span>
+			
+			</div>
+		</div>
+		<div id="content">
+		
+		<pre class="file" id="file0" style="display: none">package configs
+
+import (
+        "log"
+        "os"
+
+        "github.com/joho/godotenv"
+)
+
+type AppConfig struct {
+        Port        string
+        DatabaseURL struct {
+                DBusername string
+                DBpassword string
+                DBhost     string
+                DBport     string
+                DBname     string
+        }
+}
+
+func InitConfig() *AppConfig <span class="cov8" title="1">{
+        err := godotenv.Load()
+        if err != nil </span><span class="cov0" title="0">{
+                log.Fatal("Error loading .env file")
+        }</span>
+
+        <span class="cov8" title="1">var cfg AppConfig
+        cfg.Port = os.Getenv("APP_PORT")
+        cfg.DatabaseURL.DBusername = os.Getenv("DB_USERNAME")
+        cfg.DatabaseURL.DBpassword = os.Getenv("DB_PASSWORD")
+        cfg.DatabaseURL.DBhost = os.Getenv("DB_HOST")
+        cfg.DatabaseURL.DBport = os.Getenv("DB_PORT")
+        cfg.DatabaseURL.DBname = os.Getenv("DB_NAME")
+        return &amp;cfg</span>
+}
+</pre>
+		
+		<pre class="file" id="file1" style="display: none">package products
+
+import (
+        "foodresq/dto"
+        "foodresq/entities"
+        errorhandler "foodresq/errorHandler"
+        "foodresq/repository/products"
+        "net/http"
+        "time"
+
+        "github.com/golang-jwt/jwt"
+        "github.com/labstack/echo/v4"
+)
+
+type ProductController struct {
+        Repo products.ProductInterface
+}
+
+func NewProductController(repo products.ProductInterface) *ProductController <span class="cov0" title="0">{
+        return &amp;ProductController{
+                Repo: repo,
+        }
+}</span>
+
+func (pc ProductController) CreateProduct() echo.HandlerFunc <span class="cov0" title="0">{
+
+        return func(c echo.Context) error </span><span class="cov0" title="0">{
+                uid := c.Get("user").(*jwt.Token)
+                claims := uid.Claims.(jwt.MapClaims)
+                restaurantID := uint(claims["restaurantid"].(float64))
+
+                // Binding request body to ProductRequest struct
+                productReq := dto.ProductRequest{}
+                if err := c.Bind(&amp;productReq); err != nil </span><span class="cov0" title="0">{
+                        return c.JSON(http.StatusBadRequest, errorhandler.ResponseWriter("Invalid request body"))
+                }</span>
+
+                // Parsing ProductCategory and ProductCondition from request
+                <span class="cov0" title="0">category, err := entities.ParseProductCategory(productReq.ProductCategory)
+                if err != nil </span><span class="cov0" title="0">{
+                        return c.JSON(http.StatusBadRequest, errorhandler.ResponseWriter(err.Error()))
+                }</span>
+
+                <span class="cov0" title="0">condition, err := entities.ParseProductCondition(productReq.ProductCondition)
+                if err != nil </span><span class="cov0" title="0">{
+                        return c.JSON(http.StatusBadRequest, errorhandler.ResponseWriter(err.Error()))
+                }</span>
+
+                // Parse ExpiryDate to time.Time
+                <span class="cov0" title="0">var expiryDate time.Time
+                if productReq.ExpiryDate != "" </span><span class="cov0" title="0">{
+                        // Parse tanggal kedaluwarsa dari string ke time.Time
+                        expiryDate, err = time.Parse("2006-01-02", productReq.ExpiryDate)
+                        if err != nil </span><span class="cov0" title="0">{
+                                return c.JSON(http.StatusBadRequest, errorhandler.ResponseWriter("Invalid expiry date format"))
+                        }</span>
+                        // Konversi ke Waktu Indonesia Barat (WIB)
+                        <span class="cov0" title="0">loc, err := time.LoadLocation("Asia/Jakarta")
+                        if err != nil </span><span class="cov0" title="0">{
+                                return c.JSON(http.StatusInternalServerError, errorhandler.ResponseWriter(err.Error()))
+                        }</span>
+                        <span class="cov0" title="0">expiryDate = expiryDate.In(loc)</span>
+                }
+
+                // Creating Product entity
+                <span class="cov0" title="0">newProduct := entities.RestaurantProduct{
+                        RestaurantInfoID: restaurantID,
+                        ProductName:      productReq.ProductName,
+                        Quantity:         productReq.Quantity,
+                        ProductCategory:  category,
+                        ProductPrice:     productReq.ProductPrice,
+                        ProductCondition: condition,
+                        ProductImage:     productReq.ProductImage,
+                        ExpiryDate:       expiryDate,
+                        Description:      productReq.Description,
+                }
+
+                // Calling repository to create product
+                createdProduct, err := pc.Repo.CreateProduct(restaurantID, newProduct)
+                if err != nil </span><span class="cov0" title="0">{
+                        return c.JSON(http.StatusInternalServerError, errorhandler.ResponseWriter(err.Error()))
+                }</span>
+
+                // Constructing success response
+                <span class="cov0" title="0">response := dto.ProductResponseMsg{
+                        Message: "Product created successfully",
+                        Data:    createdProduct,
+                }
+
+                return c.JSON(http.StatusCreated, response)</span>
+        }
+}
+
+func (pc ProductController) GetAllProduct() echo.HandlerFunc <span class="cov0" title="0">{
+
+        return func(c echo.Context) error </span><span class="cov0" title="0">{
+                products, err := pc.Repo.GetAllProduct()
+                if err != nil </span><span class="cov0" title="0">{
+                        return c.JSON(http.StatusInternalServerError, errorhandler.ResponseWriter(err.Error()))
+                }</span>
+
+                <span class="cov0" title="0">response := dto.ProductListResponseMsg{
+                        Message: "List of all products",
+                        Data:    products,
+                }
+
+                return c.JSON(http.StatusOK, response)</span>
+        }
+}
+
+func (pc ProductController) UpdateProduct() echo.HandlerFunc <span class="cov0" title="0">{
+        return func(c echo.Context) error </span><span class="cov0" title="0">{
+                uid := c.Get("user").(*jwt.Token)
+                claims := uid.Claims.(jwt.MapClaims)
+                restaurantID := uint(claims["restaurantid"].(float64))
+
+                // Binding request body to ProductRequest struct
+                productReq := dto.UpdateProductRequest{}
+                if err := c.Bind(&amp;productReq); err != nil </span><span class="cov0" title="0">{
+                        return c.JSON(http.StatusBadRequest, errorhandler.ResponseWriter("Invalid request body"))
+                }</span>
+
+                // Parsing ProductCategory and ProductCondition from request
+                <span class="cov0" title="0">category, err := entities.ParseProductCategory(productReq.ProductCategory)
+                if err != nil </span><span class="cov0" title="0">{
+                        return c.JSON(http.StatusBadRequest, errorhandler.ResponseWriter(err.Error()))
+                }</span>
+
+                <span class="cov0" title="0">condition, err := entities.ParseProductCondition(productReq.ProductCondition)
+                if err != nil </span><span class="cov0" title="0">{
+                        return c.JSON(http.StatusBadRequest, errorhandler.ResponseWriter(err.Error()))
+                }</span>
+
+                // Parse ExpiryDate to time.Time
+                <span class="cov0" title="0">var expiryDate time.Time
+                if productReq.ExpiryDate != "" </span><span class="cov0" title="0">{
+                        // Parse tanggal kedaluwarsa dari string ke time.Time
+                        expiryDate, err = time.Parse("2006-01-02", productReq.ExpiryDate)
+                        if err != nil </span><span class="cov0" title="0">{
+                                return c.JSON(http.StatusBadRequest, errorhandler.ResponseWriter("Invalid expiry date format"))
+                        }</span>
+                        // Konversi ke Waktu Indonesia Barat (WIB)
+                        <span class="cov0" title="0">loc, err := time.LoadLocation("Asia/Jakarta")
+                        if err != nil </span><span class="cov0" title="0">{
+                                return c.JSON(http.StatusInternalServerError, errorhandler.ResponseWriter(err.Error()))
+                        }</span>
+                        <span class="cov0" title="0">expiryDate = expiryDate.In(loc)</span>
+                }
+
+                // Creating Product entity
+                <span class="cov0" title="0">updatedProduct := entities.RestaurantProduct{
+                        RestaurantInfoID: restaurantID,
+                        ProductName:      productReq.ProductName,
+                        Quantity:         productReq.Quantity,
+                        ProductCategory:  category,
+                        ProductPrice:     productReq.ProductPrice,
+                        ProductCondition: condition,
+                        ProductImage:     productReq.ProductImage,
+                        ExpiryDate:       expiryDate,
+                        Description:      productReq.Description,
+                }
+
+                // Calling repository to update product
+                updatedProduct, err = pc.Repo.UpdateProduct(restaurantID, updatedProduct)
+                if err != nil </span><span class="cov0" title="0">{
+                        return c.JSON(http.StatusInternalServerError, errorhandler.ResponseWriter(err.Error()))
+                }</span>
+
+                // Constructing success response
+                <span class="cov0" title="0">response := dto.ProductResponseMsg{
+                        Message: "Product updated successfully",
+                        Data:    updatedProduct,
+                }
+
+                return c.JSON(http.StatusOK, response)</span>
+        }
+}
+
+func (pc *ProductController) DeleteProduct() echo.HandlerFunc <span class="cov0" title="0">{
+        return func(c echo.Context) error </span><span class="cov0" title="0">{
+                uid := c.Get("user").(*jwt.Token)
+                claims := uid.Claims.(jwt.MapClaims)
+                restaurantID := uint(claims["restaurantid"].(float64))
+
+                // Binding request body to ProductDeleteByNameRequest struct
+                deleteReq := dto.ProductDeleteRequest{}
+                if err := c.Bind(&amp;deleteReq); err != nil </span><span class="cov0" title="0">{
+                        return c.JSON(http.StatusBadRequest, errorhandler.ResponseWriter("Invalid request body"))
+                }</span>
+
+                // Calling repository to delete product by name
+                <span class="cov0" title="0">err := pc.Repo.DeleteProduct(restaurantID, deleteReq.ProductName)
+                if err != nil </span><span class="cov0" title="0">{
+                        return c.JSON(http.StatusInternalServerError, errorhandler.ResponseWriter(err.Error()))
+                }</span>
+
+                // Constructing success response
+                <span class="cov0" title="0">response := dto.ProductDeleteResponseMsg{
+                        Message: "Product deleted successfully",
+                }
+
+                return c.JSON(http.StatusOK, response)</span>
+        }
+}
+</pre>
+		
+		<pre class="file" id="file2" style="display: none">package restaurants
+
+import (
+        "crypto/sha256"
+        "fmt"
+        "foodresq/dto"
+        "foodresq/entities"
+        errorhandler "foodresq/errorHandler"
+        "foodresq/middleware"
+        "foodresq/repository/restaurants"
+        "net/http"
+
+        "github.com/golang-jwt/jwt"
+        "github.com/labstack/echo/v4"
+)
+
+type RestaurantsController struct {
+        Repo restaurants.RestaurantInterface
+}
+
+func NewRestaurantController(repo restaurants.RestaurantInterface) *RestaurantsController <span class="cov0" title="0">{
+        return &amp;RestaurantsController{
+                Repo: repo,
+        }
+}</span>
+
+func (rc RestaurantsController) SignupRestaurant() echo.HandlerFunc <span class="cov0" title="0">{
+
+        return func(c echo.Context) error </span><span class="cov0" title="0">{
+
+                newRestReq := dto.RestSignupRequest{}
+
+                if err := c.Bind(&amp;newRestReq); err != nil </span><span class="cov0" title="0">{
+                        return c.JSON(http.StatusBadRequest, errorhandler.ResponseWriter("Invalid request body"))
+                }</span>
+
+                <span class="cov0" title="0">passwordHash := sha256.Sum256([]byte(newRestReq.Password))
+                passwordString := fmt.Sprintf("%x", passwordHash[:])
+
+                newRestaurant := entities.Restaurant{
+                        Email:    newRestReq.Email,
+                        Password: passwordString,
+                }
+
+                if res, err := rc.Repo.Signup(newRestaurant); err != nil || res.ID == 0 </span><span class="cov0" title="0">{
+                        return c.JSON(http.StatusInternalServerError, errorhandler.ResponseWriter(err.Error()))
+
+                }</span> else<span class="cov0" title="0"> {
+                        data := dto.RestaurantResponse{
+                                ID:    res.ID,
+                                Email: res.Email,
+                        }
+
+                        response := dto.SignupRestaurantsResponse{
+                                Message: "Signup success",
+                                Data:    data,
+                        }
+                        return c.JSON(http.StatusOK, response)
+
+                }</span>
+        }
+}
+
+func (rc RestaurantsController) LoginRestaurant() echo.HandlerFunc <span class="cov0" title="0">{
+
+        return func(c echo.Context) error </span><span class="cov0" title="0">{
+
+                restLogin := dto.RestLoginRequest{}
+
+                if err := c.Bind(&amp;restLogin); err != nil </span><span class="cov0" title="0">{
+                        return c.JSON(http.StatusBadRequest, errorhandler.ResponseWriter("Invalid request body"))
+                }</span>
+
+                <span class="cov0" title="0">hash := sha256.Sum256([]byte(restLogin.Password))
+                passwordString := fmt.Sprintf("%x", hash[:])
+
+                if res, err := rc.Repo.Login(restLogin.Email, passwordString); err != nil || res.ID == 0 </span><span class="cov0" title="0">{
+                        return c.JSON(http.StatusNotFound, errorhandler.ResponseWriter(err.Error()))
+
+                }</span> else<span class="cov0" title="0"> {
+
+                        token, _ := middleware.GenerateTokenRestaurant(res.ID)
+
+                        return c.JSON(http.StatusOK, dto.RestaurantLoginResponse{
+                                Message: "Login success",
+                                Token:   token,
+                        })
+                }</span>
+
+        }
+}
+
+func (rc RestaurantsController) UpdateMyRestaurant() echo.HandlerFunc <span class="cov0" title="0">{
+
+        return func(c echo.Context) error </span><span class="cov0" title="0">{
+
+                uid := c.Get("user").(*jwt.Token)
+                claims := uid.Claims.(jwt.MapClaims)
+                restaurantId := claims["restaurantid"].(float64)
+
+                restoReq := dto.RestSignupRequest{}
+
+                if err := c.Bind(&amp;restoReq); err != nil </span><span class="cov0" title="0">{
+                        return c.JSON(http.StatusBadRequest, errorhandler.ResponseWriter("Invalid request body"))
+                }</span>
+
+                <span class="cov0" title="0">passwordHash := sha256.Sum256([]byte(restoReq.Password))
+                passwordString := fmt.Sprintf("%x", passwordHash[:])
+
+                restaurant := entities.Restaurant{
+                        Email:    restoReq.Email,
+                        Password: passwordString,
+                }
+
+                if res, err := rc.Repo.Update(uint(restaurantId), restaurant); err != nil || res.ID == 0 </span><span class="cov0" title="0">{
+                        return c.JSON(http.StatusNotFound, errorhandler.ResponseWriter(err.Error()))
+
+                }</span> else<span class="cov0" title="0"> {
+                        data := dto.RestaurantResponse{
+                                ID:    res.ID,
+                                Email: res.Email,
+                        }
+
+                        response := dto.SignupRestaurantsResponse{
+                                Message: "Email or password",
+                                Data:    data,
+                        }
+
+                        return c.JSON(http.StatusOK, response)
+                }</span>
+        }
+}
+
+func (rc RestaurantsController) GetMyRestaurant() echo.HandlerFunc <span class="cov0" title="0">{
+
+        return func(c echo.Context) error </span><span class="cov0" title="0">{
+
+                uid := c.Get("user").(*jwt.Token)
+                claims := uid.Claims.(jwt.MapClaims)
+                restaurantId := claims["restaurantid"].(float64)
+
+                if res, _, err := rc.Repo.Get(uint(restaurantId)); err != nil </span><span class="cov0" title="0">{
+                        return c.JSON(http.StatusNotFound, errorhandler.ResponseWriter(err.Error()))
+
+                }</span> else<span class="cov0" title="0"> {
+
+                        restaurantInfo := dto.RestaurantInfoResponse{
+                                ID:                 res.RestaurantInfo.ID,
+                                Name:               res.RestaurantInfo.Name,
+                                Latitude:           res.RestaurantInfo.Latitude,
+                                Longitude:          res.RestaurantInfo.Longitude,
+                                City:               res.RestaurantInfo.City,
+                                Address:            res.RestaurantInfo.Address,
+                                PhoneNumber:        res.RestaurantInfo.PhoneNumber,
+                                Description:        res.RestaurantInfo.Description,
+                                RestaurantProducts: res.RestaurantInfo.RestaurantProducts,
+                        }
+
+                        response := dto.RestaurantProfileResponseMsg{
+                                Message: "Get restaurant profile success",
+                                Data:    restaurantInfo,
+                        }
+
+                        return c.JSON(http.StatusOK, response)
+                }</span>
+        }
+}
+
+func (rc RestaurantsController) CreateRestaurantInfo() echo.HandlerFunc <span class="cov0" title="0">{
+
+        return func(c echo.Context) error </span><span class="cov0" title="0">{
+
+                uid := c.Get("user").(*jwt.Token)
+                claims := uid.Claims.(jwt.MapClaims)
+                restaurantId := claims["restaurantid"].(float64)
+
+                restIReq := dto.RestaurantInfoRequest{}
+                if err := c.Bind(&amp;restIReq); err != nil </span><span class="cov0" title="0">{
+                        return c.JSON(http.StatusBadRequest, errorhandler.ResponseWriter("Invalid request body"))
+                }</span>
+
+                <span class="cov0" title="0">restI := entities.RestaurantInfo{
+                        Name:        restIReq.Name,
+                        Latitude:    restIReq.Latitude,
+                        Longitude:   restIReq.Longitude,
+                        City:        restIReq.City,
+                        Address:     restIReq.Address,
+                        PhoneNumber: restIReq.PhoneNumber,
+                        Description: restIReq.Description,
+                }
+
+                if res, err := rc.Repo.CreateInfo(uint(restaurantId), restI); err != nil || res.ID == 0 </span><span class="cov0" title="0">{
+                        return c.JSON(http.StatusNotFound, errorhandler.ResponseWriter(err.Error()))
+                }</span> else<span class="cov0" title="0"> {
+
+                        restaurantInfo := dto.RestaurantInfoResponse{
+                                ID:          res.ID,
+                                Name:        res.Name,
+                                Latitude:    res.Latitude,
+                                Longitude:   res.Longitude,
+                                City:        res.City,
+                                Address:     res.Address,
+                                PhoneNumber: res.PhoneNumber,
+                                Description: res.Description,
+                        }
+
+                        response := dto.RestaurantInfoResponseMsg{
+                                Message: "Create restaurant info success",
+                                Data:    restaurantInfo,
+                        }
+
+                        return c.JSON(http.StatusOK, response)
+                }</span>
+        }
+}
+
+func (rc RestaurantsController) UpdateRestaurantInfo() echo.HandlerFunc <span class="cov0" title="0">{
+
+        return func(c echo.Context) error </span><span class="cov0" title="0">{
+
+                uid := c.Get("user").(*jwt.Token)
+                claims := uid.Claims.(jwt.MapClaims)
+                restaurantId := claims["restaurantid"].(float64)
+
+                updRestIReq := dto.RestaurantInfoUpdateRequest{}
+                if err := c.Bind(&amp;updRestIReq); err != nil </span><span class="cov0" title="0">{
+                        return c.JSON(http.StatusBadRequest, errorhandler.ResponseWriter("Invalid request body"))
+                }</span>
+
+                <span class="cov0" title="0">updRest := entities.RestaurantInfo{
+                        Name:        updRestIReq.Name,
+                        Latitude:    updRestIReq.Latitude,
+                        Longitude:   updRestIReq.Longitude,
+                        City:        updRestIReq.City,
+                        Address:     updRestIReq.Address,
+                        PhoneNumber: updRestIReq.PhoneNumber,
+                        Description: updRestIReq.Description,
+                }
+
+                if res, err := rc.Repo.UpdateInfo(uint(restaurantId), updRest); err != nil || res.ID == 0 </span><span class="cov0" title="0">{
+                        return c.JSON(http.StatusNotFound, errorhandler.ResponseWriter(err.Error()))
+                }</span> else<span class="cov0" title="0"> {
+
+                        restaurantInfo := dto.RestaurantInfoResponse{
+                                ID:          res.ID,
+                                Name:        res.Name,
+                                Latitude:    res.Latitude,
+                                Longitude:   res.Longitude,
+                                City:        res.City,
+                                Address:     res.Address,
+                                PhoneNumber: res.PhoneNumber,
+                                Description: res.Description,
+                        }
+
+                        response := dto.RestaurantInfoResponseMsg{
+                                Message: "Update restaurant info success",
+                                Data:    restaurantInfo,
+                        }
+
+                        return c.JSON(http.StatusOK, response)
+                }</span>
+        }
+}
+
+func (rc RestaurantsController) GetAllRestaurants() echo.HandlerFunc <span class="cov0" title="0">{
+
+        return func(c echo.Context) error </span><span class="cov0" title="0">{
+                res, err := rc.Repo.GetAll()
+                if err != nil </span><span class="cov0" title="0">{
+                        return c.JSON(http.StatusNotFound, errorhandler.ResponseWriter(err.Error()))
+                }</span>
+
+                <span class="cov0" title="0">var resp []dto.AllRestaurantListResponse
+
+                for _, restI := range res </span><span class="cov0" title="0">{
+                        resp = append(resp, dto.AllRestaurantListResponse{
+                                ID:          restI.ID,
+                                Name:        restI.Name,
+                                Latitude:    restI.Latitude,
+                                Longitude:   restI.Longitude,
+                                City:        restI.City,
+                                Address:     restI.Address,
+                                PhoneNumber: restI.PhoneNumber,
+                                Description: restI.Description,
+                        })
+                }</span>
+                <span class="cov0" title="0">response := dto.AllRestaurantListResponseMsg{
+                        Message: "Get all restaurants success",
+                        Data:    resp,
+                }
+
+                return c.JSON(http.StatusOK, response)</span>
+        }
+
+}
+</pre>
+		
+		<pre class="file" id="file3" style="display: none">package transaction
+
+import (
+        "foodresq/dto"
+        "foodresq/entities"
+        errorhandler "foodresq/errorHandler"
+        "foodresq/helpers"
+        "foodresq/repository/transaction"
+        "net/http"
+        "time"
+
+        "github.com/go-playground/validator/v10"
+        "github.com/golang-jwt/jwt"
+        "github.com/labstack/echo/v4"
+)
+
+type TransactionController struct {
+        Repo      transaction.TransactionInterface
+        Validator *validator.Validate
+}
+
+func NewTransactionController(repo transaction.TransactionInterface) *TransactionController <span class="cov0" title="0">{
+        return &amp;TransactionController{
+                Repo:      repo,
+                Validator: validator.New(),
+        }
+}</span>
+
+// func (tc *TransactionController) PurchaseProductByName() echo.HandlerFunc {
+//         return func(c echo.Context) error {
+//                 // Get user ID from context or token
+//                 uid := c.Get("user").(*jwt.Token)
+//                 claims := uid.Claims.(jwt.MapClaims)
+//                 userID := uint(claims["userid"].(float64))
+
+//                 // Binding request body to ProductPurchaseRequest struct
+//                 purchaseReq := dto.PurchaseRequest{}
+//                 if err := c.Bind(&amp;purchaseReq); err != nil {
+//                         return c.JSON(http.StatusBadRequest, errorhandler.ResponseWriter("Invalid request body"))
+//                 }
+
+//                 // Calling repository to get product by name
+//                 product, err := tc.Repo.GetProductByName(purchaseReq.ProductName)
+//                 if err != nil {
+//                         return c.JSON(http.StatusNotFound, errorhandler.ResponseWriter(err.Error()))
+//                 }
+
+//                 // Create new transaction entity
+//                 transaction := entities.Transaction{
+//                         UserID:              userID,
+//                         RestaurantProductID: product.ID,
+//                         TotalAmount:         float64(product.ProductPrice) * float64(purchaseReq.Quantity),
+//                         UniqueCode:          helpers.GenerateUniqueCode(),
+//                         PaymentType:         "Cash",
+//                         PickupTime:          time.Now(),
+//                 }
+
+//                 // Calling repository to insert transaction
+//                 if err := tc.Repo.InsertTransaction(transaction); err != nil {
+//                         return c.JSON(http.StatusInternalServerError, errorhandler.ResponseWriter(err.Error()))
+//                 }
+
+//                 // Constructing success response
+//                 response := dto.TransactionResponse{
+//                         Message: "Product purchased successfully",
+//                 }
+
+//                 return c.JSON(http.StatusOK, response)
+//         }
+// }
+
+func (tc *TransactionController) PurchaseProductByName() echo.HandlerFunc <span class="cov0" title="0">{
+        return func(c echo.Context) error </span><span class="cov0" title="0">{
+
+                uid := c.Get("user").(*jwt.Token)
+                claims := uid.Claims.(jwt.MapClaims)
+                userID := uint(claims["userid"].(float64))
+
+                // Bind request body to DTO
+                var transactionReq dto.PurchaseRequest
+                if err := c.Bind(&amp;transactionReq); err != nil </span><span class="cov0" title="0">{
+                        return c.JSON(http.StatusBadRequest, errorhandler.ResponseWriter("Invalid request body"))
+                }</span>
+
+                // Validate request data
+                <span class="cov0" title="0">if err := tc.Validator.Struct(&amp;transactionReq); err != nil </span><span class="cov0" title="0">{
+                        return c.JSON(http.StatusBadRequest, errorhandler.ResponseWriter(err.Error()))
+                }</span>
+
+                // Get product by name
+                <span class="cov0" title="0">product, err := tc.Repo.GetProductByName(transactionReq.ProductName)
+                if err != nil </span><span class="cov0" title="0">{
+                        return c.JSON(http.StatusNotFound, errorhandler.ResponseWriter(err.Error()))
+                }</span>
+
+                // Calculate total amount
+                <span class="cov0" title="0">totalAmount := int(transactionReq.Quantity) * product.ProductPrice
+                totalAmountFloat := float64(totalAmount)
+
+                // Parse pickup time
+                pickupTime, err := time.Parse(time.RFC3339, transactionReq.PickupTime)
+                if err != nil </span><span class="cov0" title="0">{
+                        return c.JSON(http.StatusBadRequest, errorhandler.ResponseWriter("Invalid pickup time format"))
+                }</span>
+
+                // Generate unique code
+                <span class="cov0" title="0">uniqueCode := helpers.GenerateUniqueCode()
+
+                // Create transaction entity
+                newTransaction := entities.NewTransaction(
+                        userID,
+                        product.ID,
+                        totalAmountFloat,
+                        uniqueCode,
+                        transactionReq.PaymentType,
+                        pickupTime,
+                )
+
+                // Save transaction
+                createdTransaction, err := tc.Repo.CreateTransaction(*newTransaction)
+                if err != nil </span><span class="cov0" title="0">{
+                        return c.JSON(http.StatusInternalServerError, errorhandler.ResponseWriter("Failed to create transaction"))
+                }</span>
+
+                // Return response
+                <span class="cov0" title="0">return c.JSON(http.StatusCreated, createdTransaction)</span>
+        }
+}
+
+func (tc *TransactionController) ValidateUniqueCode() echo.HandlerFunc <span class="cov0" title="0">{
+        return func(c echo.Context) error </span><span class="cov0" title="0">{
+                // Extract restaurant ID from JWT
+                uid := c.Get("user").(*jwt.Token)
+                claims := uid.Claims.(jwt.MapClaims)
+                restaurantID := uint(claims["restaurantid"].(float64))
+
+                uniqueCode := c.Param("uniqueCode")
+
+                // Get transaction by unique code
+                transaction, err := tc.Repo.GetTransactionByUniqueCode(uniqueCode)
+                if err != nil </span><span class="cov0" title="0">{
+                        return c.JSON(http.StatusNotFound, map[string]interface{}{"status": false, "message": "Transaction not found"})
+                }</span>
+
+                // Get product associated with the transaction to verify restaurant ownership
+                <span class="cov0" title="0">product, err := tc.Repo.GetProductByID(transaction.RestaurantProductID)
+                if err != nil </span><span class="cov0" title="0">{
+                        return c.JSON(http.StatusInternalServerError, map[string]interface{}{"status": false, "message": "Failed to get product details"})
+                }</span>
+
+                // Verify that the product belongs to the restaurant
+                <span class="cov0" title="0">if product.RestaurantInfoID != restaurantID </span><span class="cov0" title="0">{
+                        return c.JSON(http.StatusForbidden, map[string]interface{}{"status": false, "message": "You do not have permission to view this transaction"})
+                }</span>
+
+                // Return transaction details
+                <span class="cov0" title="0">return c.JSON(http.StatusOK, transaction)</span>
+        }
+}
+</pre>
+		
+		<pre class="file" id="file4" style="display: none">package controller
+
+import (
+        "crypto/sha256"
+        "fmt"
+        "foodresq/dto"
+        "foodresq/entities"
+        errorhandler "foodresq/errorHandler"
+        "foodresq/middleware"
+        "foodresq/repository"
+        "net/http"
+
+        "github.com/golang-jwt/jwt"
+        "github.com/labstack/echo/v4"
+)
+
+type UserController struct {
+        Repo repository.UserInterface
+}
+
+func NewUserController(usrepo repository.UserInterface) *UserController <span class="cov0" title="0">{
+        return &amp;UserController{
+                Repo: usrepo,
+        }
+}</span>
+
+func (uc UserController) Signup() echo.HandlerFunc <span class="cov0" title="0">{
+
+        return func(c echo.Context) error </span><span class="cov0" title="0">{
+                newUser := dto.SignupRequest{}
+                if err := c.Bind(&amp;newUser); err != nil </span><span class="cov0" title="0">{
+                        return c.JSON(http.StatusBadRequest, errorhandler.ResponseWriter("Invalid request body"))
+                }</span>
+
+                <span class="cov0" title="0">passwordHash := sha256.Sum256([]byte(newUser.Password))
+                passwordString := fmt.Sprintf("%x", passwordHash[:])
+                request := entities.User{
+                        Email:       newUser.Email,
+                        Password:    passwordString,
+                        Name:        newUser.Name,
+                        PhoneNumber: newUser.PhoneNumber,
+                        Address:     newUser.Address,
+                }
+
+                if res, err := uc.Repo.Signup(request); err != nil || res.ID == 0 </span><span class="cov0" title="0">{
+                        return c.JSON(http.StatusInternalServerError, errorhandler.ResponseWriter(err.Error()))
+                }</span> else<span class="cov0" title="0"> {
+                        response := dto.UserResponse{
+                                ID:          res.ID,
+                                Name:        res.Name,
+                                Email:       res.Email,
+                                PhoneNumber: res.PhoneNumber,
+                                Address:     res.Address,
+                        }
+
+                        return c.JSON(http.StatusCreated, response)
+                }</span>
+
+        }
+}
+
+func (uc UserController) Login() echo.HandlerFunc <span class="cov0" title="0">{
+
+        return func(c echo.Context) error </span><span class="cov0" title="0">{
+                loginUser := dto.LoginRequest{}
+                if err := c.Bind(&amp;loginUser); err != nil </span><span class="cov0" title="0">{
+                        return c.JSON(http.StatusBadRequest, errorhandler.ResponseWriter("Invalid request body"))
+                }</span>
+
+                <span class="cov0" title="0">passwordHash := sha256.Sum256([]byte(loginUser.Password))
+                passwordString := fmt.Sprintf("%x", passwordHash[:])
+                if res, err := uc.Repo.Login(loginUser.Email, passwordString); err != nil || res.ID == 0 </span><span class="cov0" title="0">{
+                        return c.JSON(http.StatusInternalServerError, errorhandler.ResponseWriter(err.Error()))
+                }</span> else<span class="cov0" title="0"> {
+                        token, _ := middleware.GenerateTokenUser(res.ID)
+
+                        return c.JSON(http.StatusOK, dto.LoginResponse{
+                                Message: "Login success",
+                                Token:   token,
+                        })
+                }</span>
+        }
+}
+
+func (uc UserController) GetUser() echo.HandlerFunc <span class="cov0" title="0">{
+
+        return func(c echo.Context) error </span><span class="cov0" title="0">{
+
+                uid := c.Get("user").(*jwt.Token)
+                claims := uid.Claims.(jwt.MapClaims)
+                userID := uint(claims["userid"].(float64))
+
+                if res, err := uc.Repo.Get(userID); err != nil || res.ID == 0 </span><span class="cov0" title="0">{
+                        return c.JSON(http.StatusInternalServerError, errorhandler.ResponseWriter(err.Error()))
+                }</span> else<span class="cov0" title="0"> {
+                        response := dto.UserResponse{
+                                ID:          res.ID,
+                                Name:        res.Name,
+                                Email:       res.Email,
+                                PhoneNumber: res.PhoneNumber,
+                                Address:     res.Address,
+                        }
+
+                        responses := dto.GetResponse{
+                                Message: "Get user success",
+                                Data:    response,
+                        }
+
+                        return c.JSON(http.StatusOK, responses)
+                }</span>
+        }
+}
+
+func (uc UserController) UpdateUser() echo.HandlerFunc <span class="cov0" title="0">{
+
+        return func(c echo.Context) error </span><span class="cov0" title="0">{
+
+                uid := c.Get("user").(*jwt.Token)
+                claims := uid.Claims.(jwt.MapClaims)
+                userID := uint(claims["userid"].(float64))
+
+                updateUserReq := dto.UpdateUserRequest{}
+                if err := c.Bind(&amp;updateUserReq); err != nil || updateUserReq.Email == "" || updateUserReq.Password == "" </span><span class="cov0" title="0">{
+                        return c.JSON(http.StatusBadRequest, errorhandler.ResponseWriter("Invalid request body"))
+                }</span>
+
+                <span class="cov0" title="0">passwordHash := sha256.Sum256([]byte(updateUserReq.Password))
+                passwordString := fmt.Sprintf("%x", passwordHash[:])
+
+                updateUser := entities.User{
+                        Email:       updateUserReq.Email,
+                        Password:    passwordString,
+                        Name:        updateUserReq.Name,
+                        PhoneNumber: updateUserReq.PhoneNumber,
+                        Address:     updateUserReq.Address,
+                }
+                if res, err := uc.Repo.Update(uint(userID), updateUser); err != nil || res.ID == 0 </span><span class="cov0" title="0">{
+                        return c.JSON(http.StatusNotFound, errorhandler.ResponseWriter(err.Error()))
+                }</span> else<span class="cov0" title="0"> {
+                        responses := dto.UserResponse{
+                                ID:          res.ID,
+                                Name:        res.Name,
+                                Email:       res.Email,
+                                PhoneNumber: res.PhoneNumber,
+                                Address:     res.Address,
+                        }
+
+                        response := dto.GetResponse{
+                                Message: "Update user success",
+                                Data:    responses,
+                        }
+
+                        return c.JSON(http.StatusOK, response)
+                }</span>
+        }
+}
+</pre>
+		
+		<pre class="file" id="file5" style="display: none">package entities
+
+import (
+        "fmt"
+        "strings"
+        "time"
+
+        "gorm.io/gorm"
+)
+
+type ProductCategory string
+
+const (
+        Food    ProductCategory = "Food"
+        Drink   ProductCategory = "Drink"
+        Snack   ProductCategory = "Snack"
+        Dessert ProductCategory = "Dessert"
+)
+
+type ProductCondition string
+
+const (
+        Fresh  ProductCondition = "Fresh"
+        Stale  ProductCondition = "Stale"
+        Rotten ProductCondition = "Rotten"
+)
+
+type RestaurantProduct struct {
+        gorm.Model       `json:"-"`
+        ID               uint
+        RestaurantInfoID uint
+        ProductName      string           `gorm:"not null"`
+        Quantity         int              `gorm:"column:quantity;type:int;not null;default:0"`
+        ProductCategory  ProductCategory  `gorm:"type:enum('Food','Drink','Snack','Dessert')"`
+        ProductPrice     int              `gorm:"column:product_price;type:int;not null;default:0"`
+        ProductCondition ProductCondition `gorm:"type:enum('Fresh','Stale','Rotten')"`
+        ProductImage     string           `gorm:"not null"`
+        ExpiryDate       time.Time        `gorm:"not null"`
+        Description      string
+}
+
+// ParseProductCategory mengonversi string menjadi ProductCategory enum
+func ParseProductCategory(category string) (ProductCategory, error) <span class="cov0" title="0">{
+        switch strings.ToLower(category) </span>{
+        case "food":<span class="cov0" title="0">
+                return Food, nil</span>
+        case "drink":<span class="cov0" title="0">
+                return Drink, nil</span>
+        case "snack":<span class="cov0" title="0">
+                return Snack, nil</span>
+        case "dessert":<span class="cov0" title="0">
+                return Dessert, nil</span>
+        default:<span class="cov0" title="0">
+                return "", fmt.Errorf("invalid product category: %s", category)</span>
+        }
+}
+
+// ParseProductCondition mengonversi string menjadi ProductCondition enum
+func ParseProductCondition(condition string) (ProductCondition, error) <span class="cov0" title="0">{
+        switch strings.ToLower(condition) </span>{
+        case "fresh":<span class="cov0" title="0">
+                return Fresh, nil</span>
+        case "stale":<span class="cov0" title="0">
+                return Stale, nil</span>
+        case "rotten":<span class="cov0" title="0">
+                return Rotten, nil</span>
+        default:<span class="cov0" title="0">
+                return "", fmt.Errorf("invalid product condition: %s", condition)</span>
+        }
+}
+
+// String mengembalikan representasi string dari ProductCategory enum
+func (pc ProductCategory) String() string <span class="cov0" title="0">{
+        return string(pc)
+}</span>
+
+// String mengembalikan representasi string dari ProductCondition enum
+func (pc ProductCondition) String() string <span class="cov0" title="0">{
+        return string(pc)
+}</span>
+</pre>
+		
+		<pre class="file" id="file6" style="display: none">package entities
+
+import (
+        "time"
+
+        "gorm.io/gorm"
+)
+
+// Transaction represents a payment transaction for product purchases.
+type Transaction struct {
+        gorm.Model
+        ID                  uint
+        UserID              uint
+        RestaurantProductID uint
+        TotalAmount         float64
+        UniqueCode          string
+        PaymentType         string
+        PickupTime          time.Time
+}
+
+func NewTransaction(userID uint, restaurantProductID uint, totalAmount float64, uniqueCode string, paymentType string, pickupTime time.Time) *Transaction <span class="cov0" title="0">{
+        return &amp;Transaction{
+                UserID:              userID,
+                RestaurantProductID: restaurantProductID,
+                TotalAmount:         totalAmount,
+                UniqueCode:          uniqueCode,
+                PaymentType:         paymentType,
+                PickupTime:          pickupTime,
+        }
+}</span>
+</pre>
+		
+		<pre class="file" id="file7" style="display: none">package errorhandler
+
+// func BadRequest(w http.ResponseWriter, message string) {
+//         w.WriteHeader(http.StatusBadRequest)
+//         json.NewEncoder(w).Encode(map[string]string{
+//                 "error": message,
+//         })
+// }
+
+// func InternalServerError(w http.ResponseWriter, message string) {
+//         w.WriteHeader(http.StatusInternalServerError)
+//         json.NewEncoder(w).Encode(map[string]string{
+//                 "error": message,
+//         })
+// }
+
+// func NotFound(w http.ResponseWriter, message string) {
+//         w.WriteHeader(http.StatusNotFound)
+//         json.NewEncoder(w).Encode(map[string]string{
+//                 "error": message,
+//         })
+// }
+
+// func Unauthorized(w http.ResponseWriter, message string) {
+//         w.WriteHeader(http.StatusUnauthorized)
+//         json.NewEncoder(w).Encode(map[string]string{
+//                 "error": message,
+//         })
+// }
+
+type ErrorResponse struct {
+        Status  bool   `json:"status"`
+        Message string `json:"message"`
+}
+
+func ResponseWriter(message string) *ErrorResponse <span class="cov0" title="0">{
+        return &amp;ErrorResponse{
+                Status:  true,
+                Message: message,
+        }
+}</span>
+</pre>
+		
+		<pre class="file" id="file8" style="display: none">package helpers
+
+import (
+        "crypto/rand"
+        "encoding/hex"
+        "foodresq/entities"
+)
+
+func CalculateTotalAmount(products []entities.RestaurantProduct) float64 <span class="cov0" title="0">{
+        total := 0.0
+        for _, p := range products </span><span class="cov0" title="0">{
+                total += float64(p.ProductPrice)
+        }</span>
+        <span class="cov0" title="0">return total</span>
+}
+
+func GenerateUniqueCode() string <span class="cov0" title="0">{
+        bytes := make([]byte, 4)
+        rand.Read(bytes)
+        return hex.EncodeToString(bytes)
+}</span>
+</pre>
+		
+		<pre class="file" id="file9" style="display: none">package main
+
+import (
+        "fmt"
+        "foodresq/configs"
+        "foodresq/controller"
+        "foodresq/controller/products"
+        "foodresq/controller/restaurants"
+        "foodresq/controller/transaction"
+        "foodresq/repository"
+        productRepository "foodresq/repository/products"
+        restaurantRepository "foodresq/repository/restaurants"
+        transactionRepository "foodresq/repository/transaction"
+        "foodresq/routes"
+        "foodresq/utils"
+
+        "github.com/labstack/echo/v4"
+)
+
+func main() <span class="cov0" title="0">{
+
+        config := configs.InitConfig()
+        db := utils.InitDB(config)
+
+        e := echo.New()
+        userRepository := repository.NewUserRepository(db)
+        UserController := controller.NewUserController(userRepository)
+
+        restaurantRepository := restaurantRepository.NewRestaurantRepository(db)
+        restaurantsController := restaurants.NewRestaurantController(restaurantRepository)
+
+        productRepository := productRepository.NewProductRepository(db)
+        productController := products.NewProductController(productRepository)
+
+        transactionRepository := transactionRepository.NewTransactionRepository(db)
+        transactionController := transaction.NewTransactionController(transactionRepository)
+
+        routes.InitRoute(e, UserController, restaurantsController, productController, transactionController)
+        e.Logger.Fatal(e.Start(fmt.Sprintf(":%v", config.Port)))
+}</span>
+</pre>
+		
+		<pre class="file" id="file10" style="display: none">package middleware
+
+import (
+        "log"
+        "os"
+        "time"
+
+        "github.com/golang-jwt/jwt"
+        "github.com/joho/godotenv"
+)
+
+func GetSigningKey() []byte <span class="cov0" title="0">{
+        err := godotenv.Load()
+        if err != nil </span><span class="cov0" title="0">{
+                log.Fatal("Error loading .env file")
+        }</span>
+        <span class="cov0" title="0">return []byte(os.Getenv("JWT_SECRET_KEY"))</span>
+}
+
+func GenerateTokenUser(id uint) (string, error) <span class="cov0" title="0">{
+        claims := jwt.MapClaims{}
+        claims["authorized"] = true
+        claims["userid"] = id
+        claims["exp"] = time.Now().Add(time.Hour * 24).Unix()
+        token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
+
+        return token.SignedString(GetSigningKey())
+}</span>
+
+func GenerateTokenRestaurant(id uint) (string, error) <span class="cov0" title="0">{
+        claims := jwt.MapClaims{}
+        claims["authorized"] = true
+        claims["restaurantid"] = id
+        claims["exp"] = time.Now().Add(time.Hour * 2).Unix()
+        token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
+
+        return token.SignedString(GetSigningKey())
+}</span>
+</pre>
+		
+		<pre class="file" id="file11" style="display: none">package products
+
+import (
+        "foodresq/entities"
+
+        "gorm.io/gorm"
+)
+
+type ProductRepositoryDB struct {
+        db *gorm.DB
+}
+
+func NewProductRepository(db *gorm.DB) *ProductRepositoryDB <span class="cov0" title="0">{
+        return &amp;ProductRepositoryDB{
+                db: db,
+        }
+}</span>
+
+// CreateProduct method to create new product
+func (pr *ProductRepositoryDB) CreateProduct(restaurantID uint, newProduct entities.RestaurantProduct) (entities.RestaurantProduct, error) <span class="cov0" title="0">{
+        // Set RestaurantInfoID untuk produk yang baru
+        newProduct.RestaurantInfoID = restaurantID
+
+        // Simpan produk ke dalam database
+        if err := pr.db.Create(&amp;newProduct).Error; err != nil </span><span class="cov0" title="0">{
+                return entities.RestaurantProduct{}, err
+        }</span>
+
+        <span class="cov0" title="0">return newProduct, nil</span>
+}
+
+func (pr *ProductRepositoryDB) GetAllProduct() ([]entities.RestaurantProduct, error) <span class="cov0" title="0">{
+        var products []entities.RestaurantProduct
+        if err := pr.db.Find(&amp;products).Error; err != nil </span><span class="cov0" title="0">{
+                return nil, err
+        }</span>
+        <span class="cov0" title="0">return products, nil</span>
+}
+
+func (pr *ProductRepositoryDB) UpdateProduct(restaurantID uint, updatedProduct entities.RestaurantProduct) (entities.RestaurantProduct, error) <span class="cov0" title="0">{
+        // Query untuk mencari produk yang akan diperbarui
+        var existingProduct entities.RestaurantProduct
+        if err := pr.db.Where("restaurant_info_id = ? AND product_name = ?", restaurantID, updatedProduct.ProductName).First(&amp;existingProduct).Error; err != nil </span><span class="cov0" title="0">{
+                return entities.RestaurantProduct{}, err
+        }</span>
+
+        // Update atribut produk yang ada
+        <span class="cov0" title="0">existingProduct.Quantity = updatedProduct.Quantity
+        existingProduct.ProductCategory = updatedProduct.ProductCategory
+        existingProduct.ProductPrice = updatedProduct.ProductPrice
+        existingProduct.ProductCondition = updatedProduct.ProductCondition
+        existingProduct.ProductImage = updatedProduct.ProductImage
+        existingProduct.ExpiryDate = updatedProduct.ExpiryDate
+        existingProduct.Description = updatedProduct.Description
+
+        // Simpan perubahan ke dalam database
+        if err := pr.db.Save(&amp;existingProduct).Error; err != nil </span><span class="cov0" title="0">{
+                return entities.RestaurantProduct{}, err
+        }</span>
+
+        <span class="cov0" title="0">return existingProduct, nil</span>
+}
+
+func (pr *ProductRepositoryDB) DeleteProduct(restaurantID uint, productName string) error <span class="cov0" title="0">{
+        // Cek apakah produk ada dalam database
+        var existingProduct entities.RestaurantProduct
+        if err := pr.db.Where("restaurant_info_id = ? AND product_name = ?", restaurantID, productName).First(&amp;existingProduct).Error; err != nil </span><span class="cov0" title="0">{
+                return err
+        }</span>
+
+        // Hapus produk dari database
+        <span class="cov0" title="0">if err := pr.db.Delete(&amp;existingProduct).Error; err != nil </span><span class="cov0" title="0">{
+                return err
+        }</span>
+
+        <span class="cov0" title="0">return nil</span>
+}
+</pre>
+		
+		<pre class="file" id="file12" style="display: none">package transaction
+
+import (
+        "foodresq/entities"
+
+        "gorm.io/gorm"
+)
+
+type TransactionRepositoryDB struct {
+        db *gorm.DB
+}
+
+func NewTransactionRepository(db *gorm.DB) *TransactionRepositoryDB <span class="cov0" title="0">{
+        return &amp;TransactionRepositoryDB{
+                db: db,
+        }
+}</span>
+
+func (repo *TransactionRepositoryDB) GetProductByName(productName string) (entities.RestaurantProduct, error) <span class="cov0" title="0">{
+        var product entities.RestaurantProduct
+        err := repo.db.Where("product_name = ?", productName).First(&amp;product).Error
+        if err != nil </span><span class="cov0" title="0">{
+                return product, err
+        }</span>
+        <span class="cov0" title="0">return product, nil</span>
+}
+
+func (repo *TransactionRepositoryDB) CreateTransaction(transaction entities.Transaction) (entities.Transaction, error) <span class="cov0" title="0">{
+        err := repo.db.Create(&amp;transaction).Error
+        if err != nil </span><span class="cov0" title="0">{
+                return transaction, err
+        }</span>
+        <span class="cov0" title="0">return transaction, nil</span>
+}
+
+func (r *TransactionRepositoryDB) GetTransactionByUniqueCode(uniqueCode string) (entities.Transaction, error) <span class="cov0" title="0">{
+        var transaction entities.Transaction
+        if err := r.db.Where("unique_code = ?", uniqueCode).First(&amp;transaction).Error; err != nil </span><span class="cov0" title="0">{
+                return transaction, err
+        }</span>
+        <span class="cov0" title="0">return transaction, nil</span>
+}
+
+func (r *TransactionRepositoryDB) GetProductByID(productID uint) (entities.RestaurantProduct, error) <span class="cov0" title="0">{
+        var product entities.RestaurantProduct
+        if err := r.db.First(&amp;product, productID).Error; err != nil </span><span class="cov0" title="0">{
+                return product, err
+        }</span>
+        <span class="cov0" title="0">return product, nil</span>
+}
+</pre>
+		
+		<pre class="file" id="file13" style="display: none">package repository
+
+import (
+        "foodresq/entities"
+
+        "gorm.io/gorm"
+)
+
+type UserRepositoryDB struct {
+        db *gorm.DB
+}
+
+func NewUserRepository(db *gorm.DB) *UserRepositoryDB <span class="cov8" title="1">{
+        return &amp;UserRepositoryDB{
+                db: db,
+        }
+}</span>
+
+func (repository *UserRepositoryDB) Signup(newUser entities.User) (entities.User, error) <span class="cov8" title="1">{
+        if err := repository.db.Create(&amp;newUser).Error; err != nil </span><span class="cov8" title="1">{
+                return newUser, err
+        }</span> else<span class="cov0" title="0"> {
+                return newUser, nil
+        }</span>
+}
+
+func (repository *UserRepositoryDB) Login(email, password string) (entities.User, error) <span class="cov8" title="1">{
+        var user entities.User
+
+        if err := repository.db.Where("email = ? AND password = ?", email, password).First(&amp;user).Error; err != nil </span><span class="cov0" title="0">{
+                return user, err
+        }</span>
+
+        <span class="cov8" title="1">return user, nil</span>
+
+}
+
+func (repository *UserRepositoryDB) Get(userId uint) (entities.User, error) <span class="cov8" title="1">{
+        user := entities.User{}
+
+        if err := repository.db.First(&amp;user, userId).Error; err != nil || user.ID == 0 </span><span class="cov8" title="1">{
+                return user, err
+        }</span> else<span class="cov8" title="1"> {
+                return user, nil
+        }</span>
+
+}
+
+func (repository *UserRepositoryDB) Update(userId uint, updateUser entities.User) (entities.User, error) <span class="cov8" title="1">{
+        user := entities.User{}
+
+        if err := repository.db.First(&amp;user, "id=?", userId).Error; err != nil || user.ID == 0 </span><span class="cov8" title="1">{
+                return user, err
+        }</span> else<span class="cov8" title="1"> {
+                repository.db.Model(&amp;user).Updates(updateUser)
+                return user, nil
+        }</span>
+
+}
+</pre>
+		
+		<pre class="file" id="file14" style="display: none">package routes
+
+import (
+        "foodresq/controller"
+        "foodresq/controller/products"
+        "foodresq/controller/restaurants"
+        "foodresq/controller/transaction"
+        mid "foodresq/middleware"
+
+        "github.com/labstack/echo/v4"
+        middleware "github.com/labstack/echo/v4/middleware"
+)
+
+func InitRoute(e *echo.Echo, uc *controller.UserController, rc *restaurants.RestaurantsController, pc *products.ProductController, tc *transaction.TransactionController) <span class="cov0" title="0">{
+        e.Use(middleware.Logger())
+
+        user := e.Group("/v1/users")
+        user.POST("/signup", uc.Signup())
+        user.POST("/login", uc.Login())
+
+        user.GET("/profile", uc.GetUser(), middleware.JWT([]byte(mid.GetSigningKey())))
+        user.PUT("/profile", uc.UpdateUser(), middleware.JWT([]byte(mid.GetSigningKey())))
+
+        restaurant := e.Group("/v1/restaurants")
+        restaurant.POST("/signup", rc.SignupRestaurant())
+        restaurant.POST("/login", rc.LoginRestaurant())
+
+        restaurant.GET("/profile", rc.GetMyRestaurant(), middleware.JWT([]byte(mid.GetSigningKey())))
+        restaurant.PUT("/profile", rc.UpdateMyRestaurant(), middleware.JWT([]byte(mid.GetSigningKey())))
+
+        restaurant.POST("/profile/info", rc.CreateRestaurantInfo(), middleware.JWT([]byte(mid.GetSigningKey())))
+        restaurant.PUT("/profile/info", rc.UpdateRestaurantInfo(), middleware.JWT([]byte(mid.GetSigningKey())))
+
+        restaurant.GET("/list", rc.GetAllRestaurants())
+        restaurant.GET("/validate/:uniqueCode", tc.ValidateUniqueCode(), middleware.JWT([]byte(mid.GetSigningKey())))
+
+        product := e.Group("/v1/products")
+        product.POST("/create", pc.CreateProduct(), middleware.JWT([]byte(mid.GetSigningKey())))
+        product.GET("/discover", pc.GetAllProduct())
+        product.PUT("/update", pc.UpdateProduct(), middleware.JWT([]byte(mid.GetSigningKey())))    // Update berdasarkan nama
+        product.DELETE("/delete", pc.DeleteProduct(), middleware.JWT([]byte(mid.GetSigningKey()))) // Delete berdasarkan nama
+
+        transaction := e.Group("/v1/transactions")
+        transaction.POST("/purchase", tc.PurchaseProductByName(), middleware.JWT([]byte(mid.GetSigningKey())))
+}</span>
+</pre>
+		
+		<pre class="file" id="file15" style="display: none">package utils
+
+import (
+        "fmt"
+        "foodresq/configs"
+        "foodresq/entities"
+        "log"
+
+        "gorm.io/driver/mysql"
+        "gorm.io/gorm"
+)
+
+func InitDB(config *configs.AppConfig) *gorm.DB <span class="cov8" title="1">{
+
+        dsn := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=utf8mb4&amp;parseTime=True&amp;loc=Local",
+                config.DatabaseURL.DBusername,
+                config.DatabaseURL.DBpassword,
+                config.DatabaseURL.DBhost,
+                config.DatabaseURL.DBport,
+                config.DatabaseURL.DBname,
+        )
+
+        db, err := gorm.Open(mysql.Open(dsn), &amp;gorm.Config{})
+
+        if err != nil </span><span class="cov0" title="0">{
+                log.Panic(err)
+        }</span>
+
+        <span class="cov8" title="1">InitMigration(db)
+        return db</span>
+}
+
+func InitMigration(db *gorm.DB) <span class="cov8" title="1">{
+
+        db.AutoMigrate(entities.User{})
+        db.AutoMigrate(entities.Restaurant{})
+        db.AutoMigrate(entities.RestaurantInfo{})
+        db.AutoMigrate(entities.RestaurantProduct{})
+        db.AutoMigrate(entities.Transaction{})
+
+}</span>
+</pre>
+		
+		</div>
+	</body>
+	<script>
+	(function() {
+		var files = document.getElementById('files');
+		var visible;
+		files.addEventListener('change', onChange, false);
+		function select(part) {
+			if (visible)
+				visible.style.display = 'none';
+			visible = document.getElementById(part);
+			if (!visible)
+				return;
+			files.value = part;
+			visible.style.display = 'block';
+			location.hash = part;
+		}
+		function onChange() {
+			select(files.value);
+			window.scrollTo(0, 0);
+		}
+		if (location.hash != "") {
+			select(location.hash.substr(1));
+		}
+		if (!visible) {
+			select("file0");
+		}
+	})();
+	</script>
+</html>

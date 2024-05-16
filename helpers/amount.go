@@ -1,9 +1,9 @@
 package helpers
 
 import (
+	"crypto/rand"
+	"encoding/hex"
 	"foodresq/entities"
-
-	"github.com/google/uuid"
 )
 
 func CalculateTotalAmount(products []entities.RestaurantProduct) float64 {
@@ -15,11 +15,7 @@ func CalculateTotalAmount(products []entities.RestaurantProduct) float64 {
 }
 
 func GenerateUniqueCode() string {
-	// Membuat UUID v4 baru
-	uuid := uuid.New()
-
-	// Mengonversi UUID menjadi string dan mengambil 8 karakter pertama
-	code := uuid.String()[:8]
-
-	return code
+	bytes := make([]byte, 4)
+	rand.Read(bytes)
+	return hex.EncodeToString(bytes)
 }

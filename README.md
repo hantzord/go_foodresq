@@ -46,3 +46,6 @@ API documentation   :
 ## Presentations Slide
 Link presentasi
 https://docs.google.com/presentation/d/1iCY9M7Frk2iWk5JxK0rMSBbtzxIgPczKAeftEpZHPN4/edit?usp=sharing
+
+## API Documentation
+Terdapat pada folder document 

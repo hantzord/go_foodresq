@@ -1,0 +1,713 @@
+{
+	"info": {
+		"_postman_id": "b9ca7898-16fc-498f-b556-44e1de69a7f1",
+		"name": "FOODRESQ (Mini Project Alterra)",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "25238203"
+	},
+	"item": [
+		{
+			"name": "User",
+			"item": [
+				{
+					"name": "Signup",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\": \"alfian@gmail.com\",\r\n    \"password\": \"alfian123\",\r\n    \"name\": \"Alfian Nur Fazar Rizky\",\r\n    \"phone_number\": \"123456789\",\r\n    \"address\": \"Sektor 5 Bekasi Utara\"\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BASE URL}}/v1/users/signup",
+							"host": [
+								"{{BASE URL}}"
+							],
+							"path": [
+								"v1",
+								"users",
+								"signup"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Login",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\": \"alfian@gmail.com\",\r\n    \"password\": \"alfian123\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BASE URL}}/v1/users/login",
+							"host": [
+								"{{BASE URL}}"
+							],
+							"path": [
+								"v1",
+								"users",
+								"login"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Login Failed",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"email\": \"alfian@gmail.com\",\r\n    \"password\": \"bukanalfian\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:8080/v1/users/login",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"v1",
+										"users",
+										"login"
+									]
+								}
+							},
+							"_postman_previewlanguage": null,
+							"header": null,
+							"cookie": [],
+							"body": null
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Restaurant",
+			"item": [
+				{
+					"name": "Signup",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\": \"kopi.idaman@gmail.com\",\r\n    \"password\": \"idamankopi123\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BASE URL}}/v1/restaurants/signup",
+							"host": [
+								"{{BASE URL}}"
+							],
+							"path": [
+								"v1",
+								"restaurants",
+								"signup"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Login",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\": \"kopi.idaman@gmail.com\",\r\n    \"password\": \"idamankopi123\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BASE URL}}/v1/restaurants/login",
+							"host": [
+								"{{BASE URL}}"
+							],
+							"path": [
+								"v1",
+								"restaurants",
+								"login"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Login Failed",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"email\": \"kopi.idaman@gmail.com\",\r\n    \"password\": \"bukanidamankopi123\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:8080/v1/restaurants/login",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"v1",
+										"restaurants",
+										"login"
+									]
+								}
+							},
+							"_postman_previewlanguage": null,
+							"header": null,
+							"cookie": [],
+							"body": null
+						}
+					]
+				},
+				{
+					"name": "Restaurant Profile",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdXRob3JpemVkIjp0cnVlLCJleHAiOjE3MTUzODA0NTgsInJlc3RhdXJhbnRpZCI6MX0.Cu1LPoytd_azZBkCMQPPTYHfl0SDYCXYCJDaVF27LhY"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BASE URL}}/v1/restaurants/profile",
+							"host": [
+								"{{BASE URL}}"
+							],
+							"path": [
+								"v1",
+								"restaurants",
+								"profile"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Email Or Password",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdXRob3JpemVkIjp0cnVlLCJleHAiOjE3MTUzODA0NTgsInJlc3RhdXJhbnRpZCI6MX0.Cu1LPoytd_azZBkCMQPPTYHfl0SDYCXYCJDaVF27LhY"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\": \"kopi.idaman@gmail.com\",\r\n    \"password\": \"idamankopi123\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BASE URL}}/v1/restaurants/profile",
+							"host": [
+								"{{BASE URL}}"
+							],
+							"path": [
+								"v1",
+								"restaurants",
+								"profile"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Restaurant Info",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdXRob3JpemVkIjp0cnVlLCJleHAiOjE3MTUzODA0NTgsInJlc3RhdXJhbnRpZCI6MX0.Cu1LPoytd_azZBkCMQPPTYHfl0SDYCXYCJDaVF27LhY"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"Name\": \"Kopi Idaman Bandung\",\r\n  \"City\": \"Bandung\",\r\n  \"Latitude\": 123.456,\r\n  \"Longitude\": 78.910,\r\n  \"Phone_number\": \"08591234567\",\r\n  \"Address\": \"Jl Perintis Kemerdekaan 42\",\r\n  \"Description\": \"Menjual aneka ragam kopi dan minuman\"\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BASE URL}}/v1/restaurants/profile/info",
+							"host": [
+								"{{BASE URL}}"
+							],
+							"path": [
+								"v1",
+								"restaurants",
+								"profile",
+								"info"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Restaurant Info",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"Name\": \"Kopi Idaman Jakarta\",\r\n  \"City\": \"Jakarta\",\r\n  \"Latitude\": 123.456,\r\n  \"Longitude\": 78.910,\r\n  \"Phone_number\": \"08591234567\",\r\n  \"Address\": \"Jl Kemanggisan tiga\",\r\n  \"Description\": \"Menjual aneka ragam kopi dan minuman\"\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BASE URL}}/v1/restaurants/profile/info",
+							"host": [
+								"{{BASE URL}}"
+							],
+							"path": [
+								"v1",
+								"restaurants",
+								"profile",
+								"info"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Product",
+			"item": [
+				{
+					"name": "Add Product",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"product_name\": \"Nasi goreng gila\",\r\n  \"quantity\": 3,\r\n  \"product_category\": \"Snack\",\r\n  \"product_price\": 20000,\r\n  \"product_condition\": \"Fresh\",\r\n  \"product_image\": \"http://example.com/image.jpg\",\r\n  \"expiry_date\": \"2024-05-25\",\r\n  \"description\": \"Nasi Goreng Enak\"\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BASE URL}}/v1/products/create",
+							"host": [
+								"{{BASE URL}}"
+							],
+							"path": [
+								"v1",
+								"products",
+								"create"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Add Product 2",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"product_name\": \"Sweetcorn and clementine vindaloo\",\r\n  \"quantity\": 1,\r\n  \"product_category\": \"Dessert\",\r\n  \"product_price\": 17000,\r\n  \"product_condition\": \"Fresh\",\r\n  \"product_image\": \"http://example.com/image.jpg\",\r\n  \"expiry_date\": \"2024-05-19\",\r\n  \"description\": \"Hot vindaloo made with baby sweetcorn and fresh clementine\"\r\n}\r\n",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:8080/v1/products/create",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"v1",
+										"products",
+										"create"
+									]
+								}
+							},
+							"_postman_previewlanguage": null,
+							"header": null,
+							"cookie": [],
+							"body": null
+						},
+						{
+							"name": "Add Product 3",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"product_name\": \"Teh Chamomile\",\r\n  \"quantity\": 3,\r\n  \"product_category\": \"Drink\",\r\n  \"product_price\": 12000,\r\n  \"product_condition\": \"Fresh\",\r\n  \"product_image\": \"http://example.com/image.jpg\",\r\n  \"expiry_date\": \"2024-05-16\",\r\n  \"description\": \"Teh herbal yang menenangkan dan membantu tidur nyenyak\"\r\n}\r\n",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{BASE URL}}/v1/products/create",
+									"host": [
+										"{{BASE URL}}"
+									],
+									"path": [
+										"v1",
+										"products",
+										"create"
+									]
+								}
+							},
+							"_postman_previewlanguage": null,
+							"header": null,
+							"cookie": [],
+							"body": null
+						}
+					]
+				},
+				{
+					"name": "Update Product by name",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"product_name\": \"Nasi goreng gila\",\r\n  \"quantity\": 9,\r\n  \"product_category\": \"Food\",\r\n  \"product_price\": 22000,\r\n  \"product_condition\": \"Fresh\",\r\n  \"product_image\": \"http://example.com/image.jpg\",\r\n  \"expiry_date\": \"2024-05-25\",\r\n  \"description\": \"Nasi goreng gila adalah nasi goreng dengan berbagai macam isi dimasak bersama aneka ragam bumbu.\"\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BASE URL}}/v1/products/update",
+							"host": [
+								"{{BASE URL}}"
+							],
+							"path": [
+								"v1",
+								"products",
+								"update"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Product by name",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"product_name\": \"Teh Chamomile\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BASE URL}}/v1/products/delete",
+							"host": [
+								"{{BASE URL}}"
+							],
+							"path": [
+								"v1",
+								"products",
+								"delete"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Transaction",
+			"item": [
+				{
+					"name": "Product Purchase (For User)",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"product_name\": \"Teh Chamomile\",\r\n    \"quantity\": 1,\r\n    \"payment_type\": \"Cash\",\r\n    \"pickup_time\": \"2024-06-01T15:00:00Z\"\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BASE URL}}/v1/transactions/purchase",
+							"host": [
+								"{{BASE URL}}"
+							],
+							"path": [
+								"v1",
+								"transactions",
+								"purchase"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Validate unique code (For Restaurant)",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{BASE URL}}/v1/restaurants/validate/:uniqueCode",
+							"host": [
+								"{{BASE URL}}"
+							],
+							"path": [
+								"v1",
+								"restaurants",
+								"validate",
+								":uniqueCode"
+							],
+							"variable": [
+								{
+									"key": "uniqueCode",
+									"value": ""
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Discover (Get list all product)",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdXRob3JpemVkIjp0cnVlLCJleHAiOjE3MTU1NTE4NTQsInJlc3RhdXJhbnRpZCI6MX0.xk-p29x_5n-tD_-YiI-tn9gCTsKWO2zea90tCRgbcVo",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{BASE URL}}/v1/products/discover",
+					"host": [
+						"{{BASE URL}}"
+					],
+					"path": [
+						"v1",
+						"products",
+						"discover"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "All Restaurant List",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{BASE URL}}/v1/restaurants/list",
+					"host": [
+						"{{BASE URL}}"
+					],
+					"path": [
+						"v1",
+						"restaurants",
+						"list"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"variable": [
+		{
+			"key": "BASE URL",
+			"value": "http://localhost:8080"
+		}
+	]
+}

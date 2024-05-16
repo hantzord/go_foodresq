@@ -32,6 +32,7 @@ func InitRoute(e *echo.Echo, uc *controller.UserController, rc *restaurants.Rest
 	restaurant.PUT("/profile/info", rc.UpdateRestaurantInfo(), middleware.JWT([]byte(mid.GetSigningKey())))
 
 	restaurant.GET("/list", rc.GetAllRestaurants())
+	restaurant.GET("/validate/:uniqueCode", tc.ValidateUniqueCode(), middleware.JWT([]byte(mid.GetSigningKey())))
 
 	product := e.Group("/v1/products")
 	product.POST("/create", pc.CreateProduct(), middleware.JWT([]byte(mid.GetSigningKey())))

@@ -1,4 +1,4 @@
-name: running test,build image, push registry, deploy
+name: build image, push registry, deploy
 on:
   push:
     branches: [main]
@@ -37,5 +37,6 @@ jobs:
           key: ${{ secrets.SSH_KEY }}
           script: |
             cd /home/ec2-user/foodresq
+            docker stop foodresq || true && docker rm foodresq || true
             docker pull hantzord/foodresq:latest
-            docker run -d -p 8080:8080 hantzord/foodresq:latest
+            docker run -d --name foodresq -p 80:8080 hantzord/foodresq:latest

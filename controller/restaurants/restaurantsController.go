@@ -274,15 +274,14 @@ func (rc RestaurantsController) GetAllRestaurants() echo.HandlerFunc {
 
 		for _, restI := range res {
 			resp = append(resp, dto.AllRestaurantListResponse{
-				ID:                 restI.ID,
-				Name:               restI.Name,
-				Latitude:           restI.Latitude,
-				Longitude:          restI.Longitude,
-				City:               restI.City,
-				Address:            restI.Address,
-				PhoneNumber:        restI.PhoneNumber,
-				Description:        restI.Description,
-				RestaurantProducts: restI.RestaurantProducts,
+				ID:          restI.ID,
+				Name:        restI.Name,
+				Latitude:    restI.Latitude,
+				Longitude:   restI.Longitude,
+				City:        restI.City,
+				Address:     restI.Address,
+				PhoneNumber: restI.PhoneNumber,
+				Description: restI.Description,
 			})
 		}
 		response := dto.AllRestaurantListResponseMsg{
